@@ -1,0 +1,103 @@
+<?php
+
+class product_sale{
+		    
+		public $supplied_date;
+		public $deadline;
+		public $discount;
+
+
+		//kall get_info_by_n to hoose sup naewe fy el produt feeh funtion to get info by ae
+		static function insert_sale($product_id,$start_date, $end_date,$quantity){
+		  konnekt();
+
+		  $sql = $GLOBALS["conn" ]->prepare("INSERT INTO `product_sale`( `start_date`,`quantity`,`product_product_id`, `end_date` ) VALUES (:start_date,:quantity,:product_id, :end_date);");
+		  $sql->bindParam(':product_id', $product_id);
+		   $sql->bindParam(':start_date', $start_date);
+		    $sql->bindParam(':end_date', $end_date);
+		     $sql->bindParam(':quantity', $quantity);
+		  $sql->execute();
+		  echo "New record created successfully";
+		  $GLOBALS["conn" ]=null;
+		}
+
+		static function get_discount_by_date($start_date, $end_date){
+				konnekt();
+      // prepare and bind
+
+			    $sql = $GLOBALS["conn"]->prepare("SELECT * FROM `product_sale` WHERE `start_date`= '$start_date' AND `end_date`='$end_date'");
+			    $sql->execute();
+
+			    $result = $sql->fetchAll();
+			    foreach ($result as $row) {
+			    	 echo "Sale id: " . $row["idproduct_sale"]. " - product_id: " . $row["product_product_id"]. " - quantity: " . $row["quantity"]. "<br>";
+			     #join
+			    if(!$sql){
+		       		echo "Prepare failed:(". $GLOBALS["conn"]->errno.") ".$GLOBALS["conn"]->error."<br>";
+		    }
+			}
+		}
+		#update based on id and supplied date; it's ery likely to hae a situatio where the produt_id adn supplier_id repeat we dot want to onfuse our db
+		#input: product_sale
+		##to use this funtion: the arguments must be givenn in the same order 
+		static function update($idproduct_sale,$product_id=NULL,$start_date=NULL, $end_date=NULL,$quantity=NULL){
+		    // if ($product_id!=NULL){
+		    //     konnekt();
+		    //     $sql =  $GLOBALS["conn" ]->prepare("UPDATE `product_sale` SET `product_product_id` = ':product_id' WHERE `idproduct_sale`= '$idproduct_sale' ");
+
+		    //     $sql->execute();
+		    //     $GLOBALS["conn" ]=null;
+
+		    // }
+		    echo $idproduct_sale;
+		    echo $start_date;
+		    echo $end_date;
+		    echo $quantity;
+		    if ($quantity!=NULL){
+		    	echo "quantity";
+		        konnekt();
+		        $sql =  $GLOBALS["conn" ]->prepare("UPDATE `product_sale` SET `quantity` = '$quantity' WHERE `idproduct_sale`= '$idproduct_sale' ");
+		        #$sql->bindParam(':quantity', $quantity);
+		        #$sql->bindParam(':idproduct_sale', $idproduct_sale);
+		        $sql->execute();
+		        $GLOBALS["conn" ]=null;
+		        
+
+
+		    }
+		    if ($start_date!=NULL){
+		        konnekt();
+		        $sql =  $GLOBALS["conn"]->prepare("UPDATE `product_sale` SET `start_date` =:start_date WHERE `idproduct_sale`= '$idproduct_sale' ");
+
+		        $sql->bindParam(':start_date', $start_date);
+		        if(!$sql){
+		       echo "Prepare failed: (". $GLOBALS["conn"]->errno.") ".$GLOBALS["conn"]->error."<br>";
+		    }
+		        $sql->execute();
+		        $GLOBALS["conn" ]=null;
+		        
+
+
+		    }
+		    if ($end_date!=NULL){
+		        konnekt();
+		        $sql =  $GLOBALS["conn"]->prepare("UPDATE `product_sale` SET `end_date` = :end_date WHERE `idproduct_sale`= '$idproduct_sale'");
+
+		        $sql->bindParam(':end_date', $end_date);
+		        if(!$sql){
+		       echo "Prepare failed: (". $GLOBALS["conn"]->errno.") ".$GLOBALS["conn"]->error."<br>";
+		    }
+		        $sql->execute();
+		        $GLOBALS["conn" ]=null;
+		         echo "record updated successfully";
+
+
+		    }
+		  
+		  
+		  
+		  }
+
+		}
+		
+?> 

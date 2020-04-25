@@ -2,6 +2,7 @@
 <?php
  include 'supplier.php';
  include 'product_supplier_deal.php';
+ include 'product_sale.php';
  $servername = "localhost";
 //app
  $username = "root";
@@ -32,7 +33,7 @@ $name_s="Omar we Ali";
 
  
 #2test update
-#Supplier::update($idSupplier=1,$telephone="0108373729",$address="zagazig",$deals=1);
+Supplier::update($idSupplier=1,$telephone="0108373729",$address="zagazi");
 
 
 //  $stmt = $pdo->prepare($sql);
@@ -44,7 +45,7 @@ $name_s="Omar we Ali";
 #product_supplier_deal::insert_deal(3,2,"2020-06-23",.20);
 
 #test2: update
-product_supplier_deal::update($product_product_id=5,$Supplier_idSupplier=1 , $supplied_date="2020-04-22 20:11:41", $deadline="2020-05-30");
+#product_supplier_deal::update($product_product_id=5,$Supplier_idSupplier=1 , $supplied_date="2020-04-22 20:11:41", $deadline="2020-05-30");
 
 
 #$name="maktabet dewaa";
@@ -56,3 +57,16 @@ product_supplier_deal::update($product_product_id=5,$Supplier_idSupplier=1 , $su
 
 //get nae then update nae; get_info_by_n then y5tar y3addel eh dy n 3ndho b2a
 #$sup->update($idSupplier='1', $name_s='rawraw', "011","england");
+
+
+
+#test produt_sale table
+#test insert_sale
+#product_sale::insert_sale(3,"2020-04-24", "2020-05-24",40);
+
+#test get_discount_by_date()
+#product_sale::get_discount_by_date("2020-04-24", "2020-05-24");
+
+#test update
+product_sale::update($idproduct_sale=1,$product_id=1,$quantity=60);
+#product_sale::update($idproduct_sale=1,$product_id=1,$start_date="2020-04-25",$end_date="2020-05-30");
