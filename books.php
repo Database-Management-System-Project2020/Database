@@ -19,7 +19,6 @@ $GLOBALS["conn" ]=$conn;
 class Books
 {
 	public $product_product_id;
-	public $product_stock_idstock;
     public $brand_name;
     public $parts;
     public $educational_stage;
@@ -40,39 +39,21 @@ class Books
             }
 
         }
-        function getMAXstock(){
-        try {
-            connect();
-            $stmt = $GLOBALS["conn" ]->prepare("SELECT stock_idstock from product ORDER BY product_id DESC LIMIT 0, 1;");
-            $stmt->execute();
 
-            // set the resulting array to associative
-            $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-            return $stmt->fetchColumn();
-            $GLOBALS["conn" ]=null;
-            }
-        catch(PDOException $e) {
-            echo "Error: " . $e->getMessage();
-            }
-        }
 
 	
 	function __construct($brand_name,$parts, $educational_stage, $subject)
 	{
 
-		
-		$product_stock_idstock= Books::getMAXstock();
 		$product_product_id = Books::getMAXproduct();
 		$this ->ID = $product_product_id;
-		$this ->ID_stock =$product_stock_idstock;
 		$this->_brand_name = $brand_name;
 	    $this->_parts = $parts;
 	    $this->_educational_stage = $educational_stage;
 	    $this->_subject = $subject;
         connect();
-	    $stmt = $GLOBALS["conn" ]->prepare("INSERT INTO books (product_product_id,product_stock_idstock,brand_name, parts, educational_stage, subject) VALUES (:product_product_id,:product_stock_idstock,:brand_name,:parts,:educational_stage,:subject)");
+	    $stmt = $GLOBALS["conn" ]->prepare("INSERT INTO books (product_product_id,brand_name, parts, educational_stage, subject) VALUES (:product_product_id,:brand_name,:parts,:educational_stage,:subject)");
 	    $stmt->bindParam(':product_product_id', $product_product_id);
-	    $stmt->bindParam(':product_stock_idstock', $product_stock_idstock);
     	$stmt->bindParam(':brand_name', $brand_name);
     	$stmt->bindParam(':parts', $parts);
     	$stmt->bindParam(':educational_stage', $educational_stage);
