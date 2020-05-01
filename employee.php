@@ -152,6 +152,17 @@ class employee{
     	$GLOBALS["conn" ]=null;
 
 	}
+	static function update_password ($password ,$idemployee){
+		connect();
+		$hashed = sha1($password);
+		$stmt = $GLOBALS["conn"]->prepare("UPDATE `employee` SET `password` = :password  WHERE `idemployee`=:idemployee ");
+		$stmt->bindParam(':password', $hashed);
+        $stmt->bindParam(':idemployee', $idemployee);
+    	$stmt->execute();
+    	$GLOBALS["conn" ]=null;
+
+	}
+
 
 	
 
