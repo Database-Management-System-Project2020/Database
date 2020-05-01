@@ -43,13 +43,16 @@ class employee{
 
 
 
-	static function insert_employee($name_emp, $job_description , $type ){
+	static function insert_employee($name_emp, $job_description , $type , $password ){
 		$employee_type_idemployee_type = employee::getMAXid_employee_type();
-		$stmt = $GLOBALS["conn"]->prepare("INSERT INTO employee (name_emp, job_description,type,employee_type_idemployee_type ) values (:name_emp,:job_description,:type,:employee_type_idemployee_type)");
+		$hashed = sha1($password);
+		$stmt = $GLOBALS["conn"]->prepare("INSERT INTO employee (name_emp, job_description,type,employee_type_idemployee_type ,password  ) values (:name_emp,:job_description,:type,:employee_type_idemployee_type, :password)");
 		$stmt->bindParam(':name_emp', $name_emp);
 	    $stmt->bindParam(':job_description', $job_description);
     	$stmt->bindParam(':type', $type);
     	$stmt->bindParam(':employee_type_idemployee_type', $employee_type_idemployee_type);
+    	$stmt->bindParam(':password', $hashed);
+
     	$stmt->execute();
 
 	}

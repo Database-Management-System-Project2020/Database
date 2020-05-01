@@ -160,7 +160,7 @@ class Books
 		try {
 			connect();
 			$stmt = $GLOBALS["conn"]->prepare("SELECT product_price FROM product left outer JOIN  books ON product.product_id = books.product_product_id
-		ORDER BY  books.product_product_id ");
+		        where product.product_id = $ID ");
     		$stmt->execute();
 
     		// set the resulting array to associative
@@ -177,8 +177,8 @@ class Books
 	{
 		try {
 			connect();
-			$stmt = $GLOBALS["conn"]->prepare("SELECT product_barcode FROM product left outer JOIN  books ON product.product_id = books.product_product_id
-		ORDER BY  books.product_product_id");
+			$stmt = $GLOBALS["conn"]->prepare("SELECT product_barcode FROM product left outer JOIN  books on product.product_id = books.product_product_id 
+                where product.product_id = $ID");
     		$stmt->execute();
 
     		// set the resulting array to associative
@@ -196,7 +196,7 @@ class Books
 		try {
 			connect();
 			$stmt = $GLOBALS["conn"]->prepare("SELECT amount_available FROM product left outer JOIN  books ON product.product_id = books.product_product_id
-		ORDER BY  books.product_product_id ");
+		        where product.product_id = $ID ");
     		$stmt->execute();
 
     		// set the resulting array to associative
@@ -213,7 +213,7 @@ class Books
 		try {
 			connect();
 			$stmt = $GLOBALS["conn"]->prepare("SELECT product_description FROM product left outer JOIN  books ON product.product_id = books.product_product_id
-		ORDER BY  books.product_product_id ");
+		        where product.product_id = $ID ");
     		$stmt->execute();
 
     		// set the resulting array to associative
