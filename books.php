@@ -24,54 +24,52 @@ class Books
     public $parts;
     public $educational_stage;
     public $subject;
-    
+            function getMAXproduct(){
+        try {
+            connect();
+            $stmt = $GLOBALS["conn" ]->prepare("SELECT product_id from product ORDER BY product_id DESC LIMIT 0, 1");
+            $stmt->execute();
 
+            // set the resulting array to associative
+            $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+            return $stmt->fetchColumn();
+            $GLOBALS["conn" ]=null;
+            }
+        catch(PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            }
 
+        }
+        function getMAXstock(){
+        try {
+            connect();
+            $stmt = $GLOBALS["conn" ]->prepare("SELECT stock_idstock from product ORDER BY product_id DESC LIMIT 0, 1;");
+            $stmt->execute();
+
+            // set the resulting array to associative
+            $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+            return $stmt->fetchColumn();
+            $GLOBALS["conn" ]=null;
+            }
+        catch(PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            }
+        }
 
 	
 	function __construct($brand_name,$parts, $educational_stage, $subject)
 	{
 
-		function getMAXproduct(){
-    	try {
-    		connect();
-        	$stmt = $GLOBALS["conn" ]->prepare("SELECT product_id from product ORDER BY product_id DESC LIMIT 0, 1");
-    		$stmt->execute();
-
-    		// set the resulting array to associative
-    		$result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-    		return $stmt->fetchColumn();
-    		$GLOBALS["conn" ]=null;
-			}
-		catch(PDOException $e) {
-    		echo "Error: " . $e->getMessage();
-			}
-
-		}
-		function getMAXstock(){
-    	try {
-    		connect();
-        	$stmt = $GLOBALS["conn" ]->prepare("SELECT stock_idstock from product ORDER BY stock_idstock DESC LIMIT 0, 1");
-    		$stmt->execute();
-
-    		// set the resulting array to associative
-    		$result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-    		return $stmt->fetchColumn();
-    		$GLOBALS["conn" ]=null;
-			}
-		catch(PDOException $e) {
-    		echo "Error: " . $e->getMessage();
-			}
-
-		}
-		$product_stock_idstock= getMAXstock();
-		$product_product_id = getMAXproduct();
+		
+		$product_stock_idstock= Books::getMAXstock();
+		$product_product_id = Books::getMAXproduct();
 		$this ->ID = $product_product_id;
 		$this ->ID_stock =$product_stock_idstock;
 		$this->_brand_name = $brand_name;
 	    $this->_parts = $parts;
 	    $this->_educational_stage = $educational_stage;
 	    $this->_subject = $subject;
+        connect();
 	    $stmt = $GLOBALS["conn" ]->prepare("INSERT INTO books (product_product_id,product_stock_idstock,brand_name, parts, educational_stage, subject) VALUES (:product_product_id,:product_stock_idstock,:brand_name,:parts,:educational_stage,:subject)");
 	    $stmt->bindParam(':product_product_id', $product_product_id);
 	    $stmt->bindParam(':product_stock_idstock', $product_stock_idstock);
@@ -81,9 +79,7 @@ class Books
     	$stmt->bindParam(':subject', $subject);
     	$stmt->execute();
     	echo "innnssseeerreeedddd";
-
-
-
+        $GLOBALS["conn" ]=null;
 
 	}
 	static function get_brand_name($ID)
