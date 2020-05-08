@@ -22,7 +22,7 @@ pages::setPage_url('abcd');
 #pages:: delete(1)
 #echo pages:: getPage_url('8');
 #pages:: updatePages(1,'snapp');
-
+#pages:: getID('abcd');
 }
 
 
@@ -66,6 +66,7 @@ catch(PDOException $e)
 }
 
 
+
 public static function getPage_url($idpages) { 
         try {
 
@@ -84,6 +85,23 @@ public static function getPage_url($idpages) {
         return $page_urll; 
     }
   
+public static function getID($page_url) { 
+        try {
+
+      connect();
+
+    $stmt = $GLOBALS["conn"]->prepare("SELECT idpages FROM pages WHERE page_url = $page_url");
+    $stmt->execute();
+    $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+    return $stmt-> fetchColumn();
+    $GLOBALS["conn" ]=null;
+
+}
+    catch(PDOException $e) {
+        echo "Error: " . $e->getMessage();
+      }
+        return $page_urll; 
+    }
   
    static function updatePages($idpages , $page_url){
     try{
