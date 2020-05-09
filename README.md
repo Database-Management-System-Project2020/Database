@@ -12,7 +12,7 @@ in this readme file we are gonna to talk about
 Contains connection class which has
 
 - Connect function:establish the connection between sql server and database, this function requires inserting data about database name($dbname), server name ($servername) and user name($username).
-- Get\_conn function:returns a connection $GLOBALS[&quot;conn&quot;] variable which prepares the sql statement for execution.
+- Get\_conn function:returns a connection variable $GLOBALS[&quot;conn&quot;] which prepares the sql statement for execution.
 - Close\_conn function: close the connection.
 
 2- books.php
