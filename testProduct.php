@@ -19,6 +19,7 @@ $GLOBALS["conn" ]=$conn;
 
 class Product{
 
+	public $product_id;
 	public $product_barcode;
 	public $product_price;
 	public $product_description;
@@ -27,24 +28,25 @@ class Product{
 	public $stock_idstock;
 	public $idstock;
 	public $idemplyee;
-    function __construct($product_barcode, $product_price, $product_description, $amount_available){
+    function __construct($product_barcode, $product_price, $product_description, $amount_available,$employee_idemployee, $stock_idstock){
 
     	connect();
         $this->product_barcode= $product_barcode;
         $this->product_price = $product_price;
         $this->product_description = $product_description;
         $this->amount_available = $amount_available;
-        //$this->employee_idemployee = $employee_idemployee;
-    	//$this->stock_idstock= $stock_idstock;
+        $this->employee_idemployee = $employee_idemployee;
+    	$this->stock_idstock= $stock_idstock;
 
-        $stmt = $GLOBALS["conn" ]->prepare("INSERT INTO product (product_barcode, product_price, product_description, amount_available) 
-                VALUES(:product_barcode,:product_price,:product_description,:amount_available)");
+        $stmt = $GLOBALS["conn" ]->prepare("INSERT INTO product (product_barcode, product_price, product_description, amount_available,employee_idemployee, stock_idstock) 
+                VALUES(:product_barcode,:product_price,:product_description,:amount_available,:employee_idemployee,
+                :stock_idstock)");
         $stmt->bindParam(':product_barcode', $product_barcode);
         $stmt->bindParam(':product_price', $product_price);
         $stmt->bindParam(':product_description', $product_description);
         $stmt->bindParam(':amount_available', $amount_available);
-        //$stmt->bindParam(':employee_idemployee', $employee_idemployee);
-        //$stmt->bindParam(':stock_idstock', $stock_idstock);
+        $stmt->bindParam(':employee_idemployee', $employee_idemployee);
+        $stmt->bindParam(':stock_idstock', $stock_idstock);
         $stmt->execute();
         //$this->id = $conn->lastInsertId();
         echo "New records created successfully";
@@ -53,18 +55,18 @@ class Product{
     }
 
     
-    public static function get_productAttributes($product_barcode)
+    public static function get_infoProduct($product_barcode)
     {   
     	try {
             connect();
-            $stmt = $GLOBALS["conn"]->prepare("SELECT product_price, product_description, amount_available FROM product WHERE `product_barcode` = '$product_barcode' ");
+            $stmt = $GLOBALS["conn"]->prepare("SELECT * FROM product WHERE `product_barcode` = '$product_barcode' ");
             $stmt->execute();
 
             // set the resulting array to associative
             // $stmt->setFetchMode(PDO::FETCH_ASSOC);
             $result = $stmt->fetchAll();
             foreach ($result as $row) {
-     echo  "  price: " . $row["product_price"]. " - description: " . $row["product_description"]. " - amount: " . $row["amount_available"]. "<br>";
+     echo  "ID: " . $row["product_id"] ." - price: " . $row["product_price"]. " - description: " . $row["product_description"]. " - amount: " . $row["amount_available"]. " - employeId: " . $row["employee_idemployee"]. " - stockId: " . $row["stock_idstock"]. "<br>";
 }
             $GLOBALS["conn" ]=null;
             }
@@ -76,23 +78,6 @@ class Product{
     
    
     
-    public static function get_stockID($product_barcode)
-    {   
-    	try {
-            connect();
-            $stmt = $GLOBALS["conn"]->prepare("SELECT stock_idstock FROM product WHERE `product_barcode` = '$product_barcode' ");
-            $stmt->execute();
-
-            // set the resulting array to associative
-            $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-            return $stmt->fetchColumn();
-            $GLOBALS["conn" ]=null;
-            }
-        catch(PDOException $e) {
-            echo "Error: " . $e->getMessage();
-            }
-        
-    }
 
     public static function get_infoStock_innerJoin ($stock_idstock)
 	{
@@ -136,23 +121,7 @@ class Product{
 		
     }
 
-    public static function get_empID($product_barcode)
-    {   
-    	try {
-            connect();
-            $stmt = $GLOBALS["conn"]->prepare("SELECT employee_idemployee FROM product WHERE `product_barcode` = '$product_barcode' ");
-            $stmt->execute();
-
-            // set the resulting array to associative
-            $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-            return $stmt->fetchColumn();
-            $GLOBALS["conn" ]=null;
-            }
-        catch(PDOException $e) {
-            echo "Error: " . $e->getMessage();
-            }
-        
-    }
+    
 
 
     public static function get_infoEmployee_innerJoin ($employee_idemployee)
@@ -201,24 +170,24 @@ class Product{
 
 
 
-    public static function update_price($product_price,$product_barcode)
+    public static function update_price($product_price,$product_id)
     {
         connect();
-        $stmt = $GLOBALS["conn"]->prepare("UPDATE `product` SET `product_price` = :product_price WHERE `product_barcode`= :product_barcode ");
+        $stmt = $GLOBALS["conn"]->prepare("UPDATE `product` SET `product_price` = :product_price WHERE `product_id`= :product_id ");
         $stmt->bindParam(':product_price', $product_price);
-        $stmt->bindParam(':product_barcode', $product_barcode);
+        $stmt->bindParam(':product_id', $product_id);
         $stmt->execute();
         $GLOBALS["conn" ]=null;
         
     }
 
 
-    public static function update_description($product_description,$product_barcode)
+    public static function update_description($product_description,$product_id)
     {
         connect();
-        $stmt = $GLOBALS["conn"]->prepare("UPDATE `product` SET `product_description` = :product_description  WHERE `product_barcode`= :product_barcode ");
+        $stmt = $GLOBALS["conn"]->prepare("UPDATE `product` SET `product_description` = :product_description  WHERE `product_id`= :product_id ");
         $stmt->bindParam(':product_description', $product_description);
-        $stmt->bindParam(':product_barcode', $product_barcode);
+        $stmt->bindParam(':product_id', $product_id);
         $stmt->execute();
         $GLOBALS["conn" ]=null;
         
@@ -226,22 +195,22 @@ class Product{
 
 
 
-    public static function update_amount_available($amount_available,$product_barcode)
+    public static function update_amount_available($amount_available,$product_id)
     {
         connect();
-        $stmt = $GLOBALS["conn"]->prepare("UPDATE `product` SET `amount_available` = :amount_available  WHERE `product_barcode`= :product_barcode ");
+        $stmt = $GLOBALS["conn"]->prepare("UPDATE `product` SET `amount_available` = :amount_available  WHERE `product_id`= :product_id ");
         $stmt->bindParam(':amount_available', $amount_available);
-        $stmt->bindParam(':product_barcode', $product_barcode);
+        $stmt->bindParam(':product_id', $product_id);
         $stmt->execute();
         $GLOBALS["conn" ]=null;
         
     }
 
-    public static function delete_product($product_barcode)
+    public static function delete_product($product_id)
 	{
 		connect();
-		$stmt = $GLOBALS["conn" ]->prepare("DELETE FROM `product` WHERE `product_barcode`= :product_barcode ");
-        $stmt->bindParam(':product_barcode', $product_barcode);
+		$stmt = $GLOBALS["conn" ]->prepare("DELETE FROM `product` WHERE `product_id`= :product_id ");
+        $stmt->bindParam(':product_id', $product_id);
     	$stmt->execute();
     	$GLOBALS["conn" ]=null;
 		

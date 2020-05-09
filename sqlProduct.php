@@ -12,7 +12,7 @@ try{
 
 
     
-    //$p = new Product ('fbrp','10','faberPen','80');  #insert(barcode,price,description,amount_available)
+    //$p = new Product ('yanni','10','toy','80','2','6');  #insert(barcode,price,description,amount_available)
 
 
     //$t = new Tools ('brgl','1');                  #insert(type,idemployee)
@@ -28,20 +28,18 @@ try{
     //Testing product table
     //*******************************//
 
-    //echo Product::get_productAttributes('cnema');       #get the price, description, amount_available of any product by its barcode
-    //Product::update_price('5','yberr');                 #update product price by (newPrice,barcode)
-    //Product::update_description('Elawael','cnema');     #update product description by (newDescription,barcode)
-    //Product::update_amount_available(100,'edrft');      #update product amount by (newAmount,barcode)
-    //echo Product::get_stockID('howth');                 #to know id_stock "foreign key" before making join query
+    //Product::get_infoProduct('yanni');       #get All information of any product by its barcode
+    //Product::update_price('30','51');                 #update product price by (newPrice,product_id)
+    //Product::update_description('boxToy','51');     #update product description by (newDescription,product_id)
+    //Product::update_amount_available(90,'51');      #update product amount by (newAmount,product_id)
     //Product::get_infoStock_innerJoin(4);              #get participated attributes between product&stock by idstock
     //Product::get_infoStock_leftouterJoin (3);         #get stock attributes that not in product by foreign key of stock
 
-    //echo Product::get_empID('plzco');                   #to know id_employee "foreign key" before making join query
 
     //Product::get_infoEmployee_innerJoin(1);           #get participated attributes between product&employee by foreign key employee
 
     //Product::get_infoEmployee_leftouterJoin(1);      #get employee attributes that not in product by employee foreign key   
-    //Product::delete_product('tbleh');                   #delete any product and its foreign key  from tools
+    //Product::delete_product('50');                   #delete any product and its foreign key  from tools by product_id
 
 
 
