@@ -82,7 +82,7 @@ public static function getType($idemployee_type) {
     $stmt = $GLOBALS["conn"]->prepare("SELECT type FROM employee_type WHERE idemployee_type = $idemployee_type");
     $stmt->execute();
     $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-    return $stmt-> fetchColumn();
+    return $stmt-> fetchall();
     $GLOBALS["conn" ]=null;
 
 }
@@ -124,7 +124,7 @@ static function deleteType($idemployee_type){
                 try{
                     connect();
          $stmt = $GLOBALS["conn"]->prepare("DELETE FROM employee_type WHERE idemployee_type=$idemployee_type");
-            ON DELETE CASCADE;
+
 
          $stmt->execute();
 
