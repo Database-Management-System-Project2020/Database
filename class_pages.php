@@ -18,9 +18,9 @@ $GLOBALS["conn" ]=$conn;
 
 
 try{
-pages::setPage_url('abcd');
+#pages::setPage_url('abcd');
 #pages:: delete(1)
-#echo pages:: getPage_url('8');
+echo pages:: getPage_url('1');
 #pages:: updatePages(1,'snapp');
 #pages:: getID('abcd');
 }
@@ -75,14 +75,14 @@ public static function getPage_url($idpages) {
     $stmt = $GLOBALS["conn"]->prepare("SELECT page_url FROM pages WHERE idpages = $idpages");
     $stmt->execute();
     $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-    return $stmt-> fetchColumn();
+    return $stmt-> fetchall();
     $GLOBALS["conn" ]=null;
 
 }
     catch(PDOException $e) {
         echo "Error: " . $e->getMessage();
       }
-        return $page_urll; 
+        return $page_url; 
     }
   
 public static function getID($page_url) { 
@@ -93,14 +93,14 @@ public static function getID($page_url) {
     $stmt = $GLOBALS["conn"]->prepare("SELECT idpages FROM pages WHERE page_url = $page_url");
     $stmt->execute();
     $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-    return $stmt-> fetchColumn();
+    return $stmt-> fetchall();
     $GLOBALS["conn" ]=null;
 
 }
     catch(PDOException $e) {
         echo "Error: " . $e->getMessage();
       }
-        return $page_urll; 
+        return $page_url; 
     }
   
    static function updatePages($idpages , $page_url){

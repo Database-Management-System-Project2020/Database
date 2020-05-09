@@ -148,7 +148,7 @@ catch(PDOException $e)
 
             // set the resulting array to associative
             $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-            return $stmt->fetchColumn();
+            return $stmt->fetchall();
             }
         catch(PDOException $e) {
             echo "Error: " . $e->getMessage();
@@ -174,7 +174,7 @@ catch(PDOException $e)
 
             // set the resulting array to associative
             $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-            return $stmt->fetchColumn();
+            return $stmt->fetchall();
             }
         catch(PDOException $e) {
             echo "Error: " . $e->getMessage();
