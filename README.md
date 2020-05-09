@@ -17,7 +17,7 @@ Contains connection class which has
 
 2- books.php
 
-Contains many function related to the books table
+Contains many functionس related to the books table
 
 To insert values you should make an object of the class and pass the values you want to insert,
 
@@ -44,14 +44,14 @@ employee\_idemployee entry in product
 
 3-images\_class.php
 
-Contains many function related to images table such as
+Contains many functions related to images table such as
 
 1. Insert\_image: takes the file in which you want to store the image as argument.
 2. On\_delete\_cascade\_images: enables cascade delete mode in images table
 
 4-employee.php
 
-Contains many function related to images table
+Contains many functions related to images table
 
 it does not matter.
 
