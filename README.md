@@ -17,7 +17,7 @@ Contains connection class which has
 
 2- books.php
 
-Contains many functionس related to the books table
+Contains many functions related to the books table
 
 To insert values you should make an object of the class and pass the values you want to insert,
 
