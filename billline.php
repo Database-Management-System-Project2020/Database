@@ -24,13 +24,10 @@ $GLOBALS["conn" ]=$conn;
 }
 try{
 
-
-#Bill_Line:: set_amount('10');
-#Bill_line:: update_amount('15');
-
-
-#echo Bill_line:: getamount(1);
 echo Bill_line::get_price(5);
+#Bill_line::set_amount('10','1');
+
+
 }
 
 
@@ -41,6 +38,9 @@ catch(PDOException $e)
     echo "Error: " . $e->getMessage();
     }
 
+
+
+
 class Bill_Line{
 	public $bill_line_id;
 	public $refund_boolean="false";
@@ -50,68 +50,45 @@ class Bill_Line{
     public $product_product_id;
 
 
-  function __construct($refund_boolean, $amount, $price_per_product){
-    function getMAXproduct(){
-        try {
-            connect();
-            $stmt = $GLOBALS["conn" ]->prepare("SELECT product_id from product ORDER BY product_id DESC LIMIT 0, 1");
-            $stmt->execute();
-
-            // set the resulting array to associative
-            $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-            return $stmt->fetchColumn();
-            $GLOBALS["conn" ]=null;
-            }
-        catch(PDOException $e) {
-            echo "Error: " . $e->getMessage();
-            }
-        }
-        function getMAXbill(){
-        try {
-            connect();
-            $stmt = $GLOBALS["conn" ]->prepare("SELECT id_b from Bill ORDER BY id_b DESC LIMIT 0, 1");
-            $stmt->execute();
-
-            // set the resulting array to associative
-            $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-            return $stmt->fetchColumn();
-            $GLOBALS["conn" ]=null;
-            }
-        catch(PDOException $e) {
-            echo "Error: " . $e->getMessage();
-            }
-        }
-        connect();  
-        $product_product_id = getMAXproduct();
-        $this->product_product_id= $product_product_id;
+  function __construct($refund_boolean, $amount, $price_per_product, $Bill_id_b, $product_product_id){
+    
         $this->refund_boolean= $refund_boolean;
         $this->amount = $amount;
         $this->price_per_product = $price_per_product;
         $this->Bill_id_b = $Bill_id_b;
+        $this->product_product_id= $product_product_id;
 
-        $stmt = $GLOBALS["conn" ]->prepare("INSERT INTO Bill_line (refund_boolean, amount, price_per_product Bill_id_b, product_product_id) 
-                VALUES (:refund_boolean,:amount,:price_per_product,:Bill_id_b,:product_product_id)");
-        $stmt->bindParam(':refund_boolean', $refund_boolean);
-        $stmt->bindParam(':amount', $amount);
-        $stmt->bindParam(':price_per_product', $price_per_product);
-        $stmt->bindParam(':Bill_id_b', $Bill_id_b);
-        $stmt->bindParam(':product_product_id', $product_product_id);
-        $stmt->execute();
-        //$this->id = $conn->lastInsertId();
-        echo "New records created successfully";
-            $GLOBALS["conn" ]=null;
-
+        
     
 
     } 
 
-  
-public static function set_amount($amount){
+  public static function get_id($barcode){
+try{
+    connect();
+
+
+     $stmt = $GLOBALS["conn"]->prepare("SELECT product_id FROM product WHERE barcode=$barcode");
+    $stmt->execute();
+    $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+    return $stmt-> fetchAll();
+    $GLOBALS["conn" ]=null;
+}
+
+
+catch(PDOException $e)
+    {
+    echo "Error: " . $e->getMessage();
+    }
+
+  }
+public static function set_amount($amount, $bill_line_id){
       try{
         connect();
-         $stmt = $GLOBALS["conn"]->prepare("INSERT INTO BillLine (amount)VALUES (:amount)");
-    $stmt->bindParam(':amount', $amount);
-    $stmt->execute();
+        $stmt = $GLOBALS["conn"]->prepare("INSERT INTO BillLine (amount) VALUES (:amount) WHERE bill_line_id=$bill_line_id");
+        $stmt->bindParam(':amount', $amount);
+        $stmt->bindParam(':bill_line_id', $bill_line_id);
+        $stmt->execute();
 
         echo "Connected successfully";
     }   
@@ -123,32 +100,13 @@ catch(PDOException $e)
       }
 
     
-public static function getamount($product_product_id) { 
 
-        try {
-
-      connect();
-
-    $stmt = $GLOBALS["conn"]->prepare("SELECT amount FROM Bill_line");
-    $stmt->execute();
-    $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-    return $stmt-> fetchColumn();
-    $GLOBALS["conn" ]=null;
-
-    }
-
-catch(PDOException $e) {
-    echo "Error: " . $e->getMessage();
-}
-
-return $amount;
-}
   
-public static function update_amount($product_product_id)
+public static function update_amount($amount, $bill_line_id)
     {
         try{
         connect();
-        $stmt = $GLOBALS["conn"]->prepare("UPDATE Bill_line SET amount = :amount");
+        $stmt = $GLOBALS["conn"]->prepare("UPDATE Bill_line SET amount = :amount WHERE bill_line_id=$bill_line_id");
         $stmt->bindParam(':amount', $amount);
         $stmt->execute();
         $GLOBALS["conn" ]=null;
@@ -164,11 +122,11 @@ public static function update_amount($product_product_id)
     }
 
 
-public static function update_refund($product_product_id)
+public static function update_refund($bill_line_id)
     {
         connect();
-        $stmt = $GLOBALS["conn"]->prepare("UPDATE Bill_line SET refund_boolean = true ");
-        $stmt->bindParam(':refund_boolean', $refund_boolean);
+        $stmt = $GLOBALS["conn"]->prepare("UPDATE Bill_line SET refund_boolean = true WHERE bill_line_id=$bill_line_id");
+        $stmt->bindParam(':bill_line_id', $bill_line_id);
         $stmt->execute();
         $GLOBALS["conn" ]=null;
 
@@ -176,28 +134,7 @@ public static function update_refund($product_product_id)
     }
 
 
-/*public static function getproductprice($product_product_id) { 
 
-
-        try {
-
-      connect();
-
-    $stmt = $GLOBALS["conn"]->prepare("SELECT price_per_product FROM Bill_line WHERE $product_product_id = product_product_id");
-    $stmt->execute();
-    $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-    return $stmt-> fetchColumn();
-    $GLOBALS["conn" ]=null;
-
-    }
-
-catch(PDOException $e) {
-    echo "Error: " . $e->getMessage();
-}
-echo "</table>";
-
-}*/
-  
 
  static function get_date($Bill_id_b)
     {
@@ -209,7 +146,7 @@ echo "</table>";
 
             // set the resulting array to associative
             $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-            return $stmt->fetchColumn();
+            return $stmt->fetchAll();
             $GLOBALS["conn" ]=null;
             }
         catch(PDOException $e) {
@@ -227,7 +164,7 @@ echo "</table>";
 
             // set the resulting array to associative
             $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-            return $stmt->fetchColumn();
+            return $stmt->fetchAll();
             $GLOBALS["conn" ]=null;
             }
         catch(PDOException $e) {
@@ -244,7 +181,7 @@ echo "</table>";
 
             // set the resulting array to associative
             $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-            return $stmt->fetchColumn();
+            return $stmt->fetchAll();
             }
         catch(PDOException $e) {
             echo "Error: " . $e->getMessage();
@@ -260,7 +197,7 @@ echo "</table>";
 
             // set the resulting array to associative
             $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-            return $stmt->fetchColumn();
+            return $stmt->fetchAll();
             $GLOBALS["conn" ]=null;
             }
         catch(PDOException $e) {
@@ -278,7 +215,7 @@ echo "</table>";
 
             // set the resulting array to associative
             $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-            return $stmt->fetchColumn();
+            return $stmt->fetchAll();
             $GLOBALS["conn" ]=null;
             }
         catch(PDOException $e) {

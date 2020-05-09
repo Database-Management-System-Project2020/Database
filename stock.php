@@ -18,12 +18,12 @@ $GLOBALS["conn" ]=$conn;
 
 
 
-
 try{
-# pages::setPage_urll('hells');
 
-#echo pages:: getPage_urll('8');
-echo stock:: getquantity('1');
+#echo stock:: getquantity(1);
+#echo stock:: getIdstock(3);
+stock:: setquantity('18');
+#stock:: updatequantity('1',4);
 
 }
 
@@ -53,9 +53,11 @@ class stock{
       connect();
   
 
-    $stmt = $GLOBALS["conn"]->prepare("INSERT INTO stock (quantity) VALUES (':quantity')");
+    $stmt = $GLOBALS["conn"]->prepare("INSERT INTO stock (quantity) VALUES (:quantity) ");
     $stmt->bindParam(':quantity', $quantity);
-    
+    $stmt->bindParam(':idstock', $idstock);
+
+
     $stmt->execute();
 
 
@@ -69,18 +71,16 @@ catch(PDOException $e)
       
 }
 
+public static function getIdstock($product_barcode) {
 
-public static function getquantity($idstock) { 
-
-
-        try {
+    try {
 
       connect();
 
-    $stmt = $GLOBALS["conn"]->prepare("SELECT quantity FROM stock ");
+    $stmt = $GLOBALS["conn"]->prepare("SELECT idstock FROM product WHERE product_barcode=$product_barcode");
     $stmt->execute();
     $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-    return $stmt-> fetchColumn();
+    return $stmt-> fetchAll();
     $GLOBALS["conn" ]=null;
 
     }
@@ -95,36 +95,62 @@ catch(PDOException $e) {
 
 
 
-public static function update_quantity($id_stock, $quantity)
-    {
-        connect();
-        $stmt = $GLOBALS["conn"]->prepare("UPDATE `stock` SET `quantity` = :quantity WHERE  `idstock`= :idstock");
-        $stmt->bindParam(':quantity', $quantity);
-        $stmt->bindParam(':idstock', $idstock);
-        $stmt->execute();
-        $GLOBALS["conn" ]=null;
+public static function getquantity($idstock) { 
 
+
+        try {
+
+      connect();
+
+    $stmt = $GLOBALS["conn"]->prepare("SELECT quantity FROM stock WHERE idstock=$idstock");
+    $stmt->execute();
+    $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+    return $stmt-> fetchAll();
+    $GLOBALS["conn" ]=null;
+
+    }
+
+catch(PDOException $e) {
+    echo "Error: " . $e->getMessage();
+}
+
+}
+  
+
+
+
+
+public static function updatequantity($idstock,$quantity)
+    {
+        try{
+
+        connect();
+        $stmt = $GLOBALS["conn"]->prepare("UPDATE stock SET quantity = :quantity WHERE  idstock= $idstock");
+        $stmt->bindParam(':quantity', $quantity);
+
+
+            $stmt->execute();
+
+
+      $GLOBALS["conn" ]=null;
+
+    
+    
+
+         echo "Connected successfully";
+    }   
+catch(PDOException $e)
+    {
+    echo "Error: " . $e->getMessage();
+    }
         
     }
  
-public static function test($stmt){
 
-
-  /*stmt = $conn->prepare("INSERT INTO pages (page_urll)
-    VALUES (:page_urll)");
-    $stmt->bindParam(':page_urll', $page_url);
-    $page_urll= "localhost/dashboard/";
-    $stmt->execute();*/
-
-  
-       return $stmt;
-
-       
-    }
     static function detele($idstock){
                 try{
                     connect();
-         $stmt = $GLOBALS["conn"]->prepare("DELETE FROM stock WHERE $idstock=idstock");
+         $stmt = $GLOBALS["conn"]->prepare("DELETE FROM stock WHERE idstock=$idstock");
          $stmt->execute();
 
         echo "record deleted successfully";

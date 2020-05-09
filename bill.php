@@ -19,6 +19,7 @@ catch(PDOException $e)
      $GLOBALS["conn" ]=$conn;
 
 }
+
 try{
 
 
@@ -42,48 +43,18 @@ catch(PDOException $e)
 class Bill {
 
       public $id_b;
-      public $date= "";
+      public $date;
       public $customer_idcustomer;
 
 
-  function __construct($date){
-  function getMAXcustomer(){
-           
-     try {
-         $stmt = $GLOBALS["conn" ]->prepare("SELECT customer_id_c from customer ORDER BY customer_id_c DESC LIMIT 0, 1");
-      $stmt->execute();
-
-      // set the resulting array to associative
-      $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-      return $stmt->fetchColumn();
-
-   }
-  catch(PDOException $e) {
-      echo "Error: " . $e->getMessage();
-   }
-
+  function __construct($date, $customer_idcustomer){
   
-  }
-
-         connect();
-
-  $customer_id_c = getMAXcustomer();
   $this->date = $date;
-  $this->customer_id_c =$customer_id_c; 
-  $stmt = $GLOBALS["conn" ]->prepare("INSERT INTO bill (date, customer_id_c) 
-   VALUES (:date, :customer_id_c)");
-  $stmt->bindParam(':type', $type);
-  $stmt->bindParam(':customer_id_c', $customer_id_c);
-     $stmt->execute();
-
-  echo "New records created successfully";
-        $GLOBALS["conn" ]=null;
- }
-
-  
+  $this->customer_idcustomer=$customer_idcustomer; 
+}
 
 
-static function set_date($date){
+public static function set_date($date){
   try{
     connect();
   
@@ -105,38 +76,14 @@ catch(PDOException $e)
 }
 
 
-public static function getdate($customer_id_c) { 
-
-
-        try {
-
-      connect();
-
-    $stmt = $GLOBALS["conn"]->prepare("SELECT date FROM Bill");
-    $stmt->execute();
-    $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-    return $stmt-> fetchColumn();
-    $GLOBALS["conn" ]=null;
-
-    }
-
-catch(PDOException $e) {
-    echo "Error: " . $e->getMessage();
-}
-echo "</table>";
-
-}
-  
 
 
 
 
-
-
-public static function update_date($customer_id_c)
+public static function update_date($id_b)
     {
         connect();
-        $stmt = $GLOBALS["conn"]->prepare("UPDATE Bill SET date = :date ");
+        $stmt = $GLOBALS["conn"]->prepare("UPDATE Bill SET date = :date WHERE id_b= $id_b");
         $stmt->bindParam(':date', $date);
         $stmt->execute();
         $GLOBALS["conn" ]=null;
@@ -144,34 +91,31 @@ public static function update_date($customer_id_c)
         
     }
 
+public static function get_idcustomer($name_c){
+     try{
+        connect();
+        $stmt = $$GLOBALS["conn"]->prepare("SELECT idcustomer from Customer WHERE name_c= $name_c ");
+        $stmt->execute();
+        $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+         return $stmt-> fetchAll();
+         $GLOBALS["conn" ]=null;
+     }
 
- static function get_customername($customer_id_c)
+
+
+
+
+}
+ static function get_customerinfo($customer_idcustomer1)
     {
         try {
             connect();
-            $stmt = $GLOBALS["conn"]->prepare("SELECT Customer.name_c, bill.customer_id_c from Customer INNER JOIN Bill on customer.id_c = bill.customer_id_c ");
+            $stmt = $GLOBALS["conn"]->prepare("SELECT * from Customer INNER JOIN Bill on customer.idcustomer = bill.customer_idcustomer1 WHERE customer_idcustomer1=$customer_idcustomer1");
             $stmt->execute();
 
             // set the resulting array to associative
             $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-            return $stmt->fetchColumn();
-            $GLOBALS["conn" ]=null;
-            }
-        catch(PDOException $e) {
-            echo "Error: " . $e->getMessage();
-            }
-        
-    }
-static function get_customerphone($customer_id_c)
-    {
-        try {
-            connect();
-            $stmt = $GLOBALS["conn"]->prepare("SELECT Customer.telephone_c, bill.customer_id_c from Customer INNER JOIN Bill on customer.id_c = bill.customer_id_c");
-            $stmt->execute();
-
-            // set the resulting array to associative
-            $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-            return $stmt->fetchColumn();
+            return $stmt->fetchAll();
             $GLOBALS["conn" ]=null;
             }
         catch(PDOException $e) {
@@ -185,7 +129,7 @@ static function get_customerphone($customer_id_c)
 static function detele($id_b){
                 try{
                     connect();
-         $stmt = $GLOBALS["conn"]->prepare("DELETE FROM Bill WHERE $id_b=id_b");
+         $stmt = $GLOBALS["conn"]->prepare("DELETE FROM Bill WHERE id_b= $id_b");
          $stmt->execute();
 
         echo "record deleted successfully";
