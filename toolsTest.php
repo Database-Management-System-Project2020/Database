@@ -5,7 +5,7 @@ function connect(){
 $servername = "localhost";
 $username   = "root";
 $password   = "";
-$dbname     = "mydb";
+$dbname     = "pro";
   try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -18,243 +18,207 @@ $GLOBALS["conn" ]=$conn;
 }
 
 class Tools{
-	public $type;
-	public $product_product_id;
+  public $product_id;
+  public $type;
+  public $product_product_id;
+  public $id_emp;
+  function set_employee_ID($id){
+            $GLOBALS["id_emp"]= $id;
+        }
 
-	function __construct($type){
+        function delete_employee_ID($id){
+             $GLOBALS["id_emp"]= null;
+        }
 
-		function getMAXproduct(){
+        function barcode_getsID($product_barcode){
+            $stmt = $GLOBALS["conn" ]->prepare("SELECT product_id from product WHERE product_barcode = $product_barcode");
+            $stmt->execute();
+
+            // set the resulting array to associative
+            $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+            return $stmt->fetchColumn();
+        }
+
+  function __construct($type){
+
+    function getMAXproduct(){
            
-    	try {
-        	$stmt = $GLOBALS["conn" ]->prepare("SELECT product_id from product ORDER BY product_id DESC LIMIT 0, 1");
-    		$stmt->execute();
+     try {
+         $stmt = $GLOBALS["conn" ]->prepare("SELECT MAX(product_id) FROM product WHERE  product.employee_idemployee ='{$GLOBALS["id_emp"]}'");
+      $stmt->execute();
 
-    		// set the resulting array to associative
-    		$result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-    		return $stmt->fetchColumn();
+      // set the resulting array to associative
+      $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+      return $stmt->fetchColumn();
 
-			}
-		catch(PDOException $e) {
-    		echo "Error: " . $e->getMessage();
-			}
+   }
+  catch(PDOException $e) {
+      echo "Error: " . $e->getMessage();
+   }
 
-		}
-		
+  }
+
+   
+  
 
          connect();
 
-		$product_product_id = getMAXproduct();
-		$this->type = $type;
-		$this->product_product_id =$product_product_id; 
-		$stmt = $GLOBALS["conn" ]->prepare("INSERT INTO tools (type, product_product_id) 
-			VALUES (:type, :product_product_id)");
-		$stmt->bindParam(':type', $type);
-		$stmt->bindParam(':product_product_id', $product_product_id);
-    	$stmt->execute();
+  $product_product_id = getMAXproduct();
+  
+  $this->type = $type;
+  $this->product_product_id =$product_product_id; 
+  $id_emp = $GLOBALS["id_emp" ];
+  
+  $stmt = $GLOBALS["conn" ]->prepare("INSERT INTO tools (type, product_product_id,id_emp) 
+   VALUES (:type, :product_product_id,:id_emp)");
+  $stmt->bindParam(':type', $type);
+  
+  $stmt->bindParam(':product_product_id', $product_product_id);
+  $stmt->bindParam(':id_emp', $id_emp);
+     $stmt->execute();
 
-		echo "New records created successfully";
+  echo "New records created successfully";
         $GLOBALS["conn" ]=null;
-	}
+ }
 
-	public static function get_type($product_product_id)
-	{
-		try {
-			connect();
-        	$stmt = $GLOBALS["conn"]->prepare("SELECT type FROM tools WHERE product_product_id = product_product_id");
-    		$stmt->execute();
+  public static function get_foreignID_by_type($type)
+  {
+    try {
+      connect();
+          $stmt = $GLOBALS["conn"]->prepare("SELECT product_product_id FROM tools WHERE `type` = '$type' ");
+        $stmt->execute();
 
-    		// set the resulting array to associative
-    		$result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-    		return $stmt->fetchColumn();
-    		$GLOBALS["conn" ]=null;
-		}
-		catch(PDOException $e) {
-    		echo "Error: " . $e->getMessage();
-		}
+        // set the resulting array to associative
+        $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        return $stmt->fetchColumn();
+        $GLOBALS["conn" ]=null;
+    }
+    catch(PDOException $e) {
+        echo "Error: " . $e->getMessage();
+    }
 
-	}
+  }
+
+  public static function get_toolsAttributes($product_barcode)
+  {
+    try {
+      connect();
+      $product_product_id = tools::barcode_getsID($product_barcode);
+          $stmt = $GLOBALS["conn"]->prepare("SELECT type, id_emp FROM tools WHERE $product_product_id = product_product_id");
+        $stmt->execute();
+
+        // set the resulting array to associative
+        // $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $result = $stmt->fetchAll();
+        foreach ($result as $row) {
+     echo "  type: " . $row["type"]. " - empID: " . $row["id_emp"]. "<br>";
+}
+        $GLOBALS["conn" ]=null;
+    }
+    catch(PDOException $e) {
+        echo "Error: " . $e->getMessage();
+    }
+
+  }
 
 
-	public static function update_type($type, $product_product_id)
-	{
-		connect();
-		$stmt = $GLOBALS["conn"]->prepare("UPDATE `tools` SET `type` = :type WHERE  `product_product_id`= :product_product_id");
-		$stmt->bindParam(':type', $type);
+  public static function update_type($type, $product_barcode)
+  {
+    connect();
+    $product_product_id= tools::barcode_getsID($product_barcode);
+    $stmt = $GLOBALS["conn"]->prepare("UPDATE `tools` SET `type` = :type WHERE  `product_product_id`= :product_product_id");
+    $stmt->bindParam(':type', $type);
         $stmt->bindParam(':product_product_id', $product_product_id);
-    	$stmt->execute();
-    	$GLOBALS["conn" ]=null;
+      $stmt->execute();
+      $GLOBALS["conn" ]=null;
 
-		
+    
+    }
+
+    public static function update_empTools($id_emp, $product_barcode)
+  {
+    connect();
+    $product_product_id= tools::barcode_getsID($product_barcode);
+    $stmt = $GLOBALS["conn"]->prepare("UPDATE `tools` SET `id_emp` = :id_emp WHERE  `product_product_id`= :product_product_id");
+    $stmt->bindParam(':id_emp', $id_emp);
+        $stmt->bindParam(':product_product_id', $product_product_id);
+      $stmt->execute();
+      $GLOBALS["conn" ]=null;
+
+    
     }
 
     //add join
     
-    static function get_price ($product_product_id)
-	{
-		try {
-			connect();
-			$stmt = $GLOBALS["conn"]->prepare("SELECT product_price FROM product  left outer JOIN  tools ON product.product_id = tools.product_product_id ORDER BY tools.product_product_id
-		WHERE  product.product_id = tools.product_product_id ");
-    		$stmt->execute();
+    static function get_infoProduct_leftouterJoin ($product_barcode)
+  {
+    try {
+      connect();
+      $product_product_id= tools::barcode_getsID($product_barcode);
+      $stmt = $GLOBALS["conn"]->prepare("SELECT product_id, product_barcode, product_price, product_description, amount_available FROM product  left outer JOIN  tools ON product.product_id = tools.product_product_id WHERE  product.product_id = $product_product_id ");
+        $stmt->execute();
 
-    		// set the resulting array to associative
-    		$result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-    		return $stmt->fetchColumn();
-    		$GLOBALS["conn" ]=null;
-			}
-		catch(PDOException $e) {
-    		echo "Error: " . $e->getMessage();
-			}
-		
+        // set the resulting array to associative
+        //$result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $result =  $stmt->fetchAll();
+        foreach ($result as $row) {
+     echo " id: " . $row["product_id"]. " - Barcode: " . $row["product_barcode"]. " - price: " . $row["product_price"]. " - description: " . $row["product_description"]. " - amount: " . $row["amount_available"]."<br>";
+}
+        $GLOBALS["conn" ]=null;
+      }
+    catch(PDOException $e) {
+        echo "Error: " . $e->getMessage();
+      }
+    
     }
     
 
-    ////////////////////////////////////////////////////////////
-    #If join doesn't work more accurate use this function
-    ////////////////////////////////////////////////////////////
-    /*
-    static function get_price ($product_product_id)
-	{
-		try {
-			connect();
-			$stmt = $GLOBALS["conn"]->prepare("SELECT product_price FROM product WHERE product_id = 12 ");
-    		$stmt->execute();
+    static function get_infoProduct_innerJoin ($product_barcode)
+  {
+    try {
+      connect();
+      $product_product_id= tools::barcode_getsID($product_barcode);
+      $stmt = $GLOBALS["conn"]->prepare("SELECT * FROM tools inner JOIN  product ON product.product_id = tools.product_product_id WHERE  product.product_id = $product_product_id ");
+        $stmt->execute();
 
-    		// set the resulting array to associative
-    		$result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-    		return $stmt->fetchColumn();
-    		$GLOBALS["conn" ]=null;
-			}
-		catch(PDOException $e) {
-    		echo "Error: " . $e->getMessage();
-			}
-		
-    }*/
+        // set the resulting array to associative
+        $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+        $result =  $stmt->fetchAll();
+        foreach ($result as $row) {
+     echo " id: " . $row["product_id"]. " - Barcode: " . $row["product_barcode"]. " - price: " . $row["product_price"]. " - description: " . $row["product_description"]. " - amount: " . $row["amount_available"]. " - type: " . $row["type"]. " - empID: " . $row["id_emp"]. "<br>";
+}
+        $GLOBALS["conn" ]=null;
+      }
+    catch(PDOException $e) {
+        echo "Error: " . $e->getMessage();
+      }
     
-    static function get_description($product_product_id)
-	{
-		try {
-			connect();
-			$stmt = $GLOBALS["conn"]->prepare("SELECT product_description FROM product left outer JOIN  tools ON product.product_id = tools.product_product_id WHERE 
-			product.product_id = tools.product_product_id ");
-    		$stmt->execute();
-
-    		// set the resulting array to associative
-    		$result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-    		return $stmt->fetchColumn();
-    		$GLOBALS["conn" ]=null;
-			}
-		catch(PDOException $e) {
-    		echo "Error: " . $e->getMessage();
-			}
+    }
+    function delete_tool_record($product_barcode)
+    {
+        //delete from product &books &images
+        //this query assumes that you anbled cascade delete in foreign constraints
+        connect();
+        $ID = tools::barcode_getsID($product_barcode);
+        $stmt = $GLOBALS["conn"]->prepare("DELETE FROM product WHERE product.product_id=$ID");
+        $stmt->execute();
+        $GLOBALS["conn" ]=null;
 
     }
 
+    function on_delete_cascade_tools(){
+      connect();
 
-    ////////////////////////////////////////////////////////////
-    #If join doesn't work more accurate use this function
-    ////////////////////////////////////////////////////////////
-    /*
-    static function get_description($product_product_id)
-	{
-		try {
-			connect();
-			$stmt = $GLOBALS["conn"]->prepare("SELECT product_description FROM product WHERE product_id = 12 ");
-    		$stmt->execute();
+        $stmt1= $GLOBALS["conn"]->prepare("alter table tools DROP  constraint fk_Tools_product1");
+        $stmt2=$GLOBALS["conn"]->prepare("alter table tools add constraint fk_Tools_product1 foreign key (product_product_id) references product(product_id) on delete cascade");
+        $stmt1->execute();
+        $stmt2->execute();
+        echo "updated";
+        $GLOBALS["conn" ]=null;
 
-    		// set the resulting array to associative
-    		$result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-    		return $stmt->fetchColumn();
-    		$GLOBALS["conn" ]=null;
-			}
-		catch(PDOException $e) {
-    		echo "Error: " . $e->getMessage();
-			}
-
-    }*/
-    
-    static function get_amount_available($product_product_id)
-	{
-		try {
-			connect();
-			$stmt = $GLOBALS["conn"]->prepare("SELECT amount_available FROM product left outer JOIN  tools ON product.product_id = tools.product_product_id
-		WHERE product.product_id = tools.product_product_id  ");
-    		$stmt->execute();
-
-    		// set the resulting array to associative
-    		$result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-    		return $stmt->fetchColumn();
-			}
-		catch(PDOException $e) {
-    		echo "Error: " . $e->getMessage();
-			}
-		
     }
 
-    ////////////////////////////////////////////////////////////
-    #If join doesn't work more accurate use this function
-    ////////////////////////////////////////////////////////////
-    /*
-    static function get_amount_available($product_product_id)
-	{
-		try {
-			connect();
-			$stmt = $GLOBALS["conn"]->prepare("SELECT amount_available FROM product WHERE product_id = 12 ");
-    		$stmt->execute();
-
-    		// set the resulting array to associative
-    		$result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-    		return $stmt->fetchColumn();
-			}
-		catch(PDOException $e) {
-    		echo "Error: " . $e->getMessage();
-			}
-		
-    }*/
-
     
-    static function get_barcode($product_product_id)
-	{
-		try {
-			connect();
-			$stmt = $GLOBALS["conn"]->prepare("SELECT product_barcode FROM product left outer JOIN  tools on product.product_id = tools.product_product_id 
-                WHERE product.product_id = tools.product_product_id ");
-    		$stmt->execute();
-
-    		// set the resulting array to associative
-    		$result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-    		return $stmt->fetchColumn();
-    		$GLOBALS["conn" ]=null;
-			}
-		catch(PDOException $e) {
-    		echo "Error: " . $e->getMessage();
-			}
-		
-    }
-
-
-    ////////////////////////////////////////////////////////////
-    #If join doesn't work more accurate use this function
-    ////////////////////////////////////////////////////////////
-
-    /*
-    static function get_barcode($product_product_id)
-	{
-		try {
-			connect();
-			$stmt = $GLOBALS["conn"]->prepare("SELECT product_barcode FROM product WHERE product_id = 11 ");
-    		$stmt->execute();
-
-    		// set the resulting array to associative
-    		$result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-    		return $stmt->fetchColumn();
-    		$GLOBALS["conn" ]=null;
-			}
-		catch(PDOException $e) {
-    		echo "Error: " . $e->getMessage();
-			}
-		
-    }*/
 
 
 
