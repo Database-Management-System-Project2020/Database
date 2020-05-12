@@ -14,8 +14,20 @@
 #TEST PART!!!
 $name_s="Omar we Ali";
 #echo Supplier::get_phone_by_n($name_s);
+//konnekt();
+// DELIMITER //
+// DROP PROCEDURE IF EXISTS;
+// CREATE PROCEDURE test()
+// 		BEGIN
+// 		SELECT * FROM `product_sale`;
+// END //
+// DELIMITER ;
 
 
+
+//product_sale::get_SP();
+//test stored proedure
+product_sale::alter_tables();
 
 #PRODUT_SUPPLIER_DEAL
 #test insert_deal
