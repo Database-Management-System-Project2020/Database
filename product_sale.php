@@ -9,43 +9,6 @@ class product_sale{
 		public $deadline;
 		public $discount;
 
-		//konnekt()
-		
-
-	
-				// 
-
-		// CREATE PROCEDURE sale_delete1()
-		// BEGIN
-		// ALTER TABLE `pro`.`product_sale` DROP CONSTRAINT `fk_product_sale_product1`
-		// 	END $$;
-		
-
-		// CREATE PROCEDURE sale_delete2
-		// AS 
-		// ALTER TABLE `pro`.`product_sale` ADD CONSTRAINT `fk_product_sale_product1`
-  //   	FOREIGN KEY (`product_product_id`)
-	 //    REFERENCES `pro`.`product` (`product_id`)
-	 //    ON DELETE SET NULL
-	 //    ON UPDATE SET NULL
-		// GO; 
-
-		static function get_SP(){
-			konnekt();
-			$sql=$GLOBALS["conn" ]->prepare("DROP PROCEDURE IF EXISTS test");
-			$sql->execute();
-			//$GLOBALS["conn" ]=null;
-
-			$sql=$GLOBALS["conn" ]->prepare("CREATE PROCEDURE test()
-			 			BEGIN
-			 				SELECT * FROM `product_sale`;
-			 			END ");
-			$sql->execute();
-			$sql=$GLOBALS["conn" ]->prepare("CALL test()");
-			$sql->execute();
-			$GLOBALS["conn" ]=null;
-		}
-
 		static function alter_tables(){
 			konnekt();
 			$sql=$GLOBALS["conn" ]->prepare("DROP PROCEDURE IF EXISTS altertbl");
