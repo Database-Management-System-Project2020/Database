@@ -64,8 +64,21 @@ Usage:
 First: Call the function get_id_from_name($name_s) which returns the supplier’s id
 
     Second: Call  delete($id) : this function takes the supplier’s id and deletes his information from the supplier’s table
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# product_sale table
 
+1-alter_tables() function:
 
+In this function I implemented a stored procedure that modifies the tables constraints 
 
+The rest of the functions in this file are used exacctly as described in the supplier's table
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>.
+# product_supplier_deal table
+
+All of the functions in this file are used exacctly as described in the supplier's table
+
+Finalyy, in the init.php file I wrote tst cases for each function. Just searh with function's name and you'll find an example there
     
 
+# Happy Querying!
