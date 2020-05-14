@@ -1,5 +1,7 @@
 <?php
 $conn;
+
+
 // Create connection
 function connect(){
 $servername = "localhost";
@@ -46,6 +48,48 @@ class Bill {
       public $date;
       public $customer_idcustomer;
 
+      
+public static function drop(){
+	try{
+		connect();
+
+
+		$sql=$GLOBALS["conn" ]->prepare("DROP PROCEDURE IF EXISTS  delete");
+        $sql->execute();
+
+		$stmt = $GLOBALS["conn"]->prepare("CREATE PROCEDURE delete()
+        BEGIN
+	        ALTER TABLE Bill 
+	        DROP CONSTRAINT `fk_bill_customer1`;
+
+	        ALTER TABLE Bill
+	        ADD CONSTRAINT `fk_bill_customer1`
+	        FOREIGN KEY(`customer_idcustomer1`)
+    		REFERENCES `pro`.`customer` (`idcustomer`)
+	        ON DELETE SET NULL 
+	        ON UPDATE CASCADE
+            
+          ALTER TABLE Bill_Line
+           
+            DROP CONSTRAINT `fk_Bill Line_bill1`;
+            ADD CONSTRAINT `fk_Bill Line_bill1`
+            FOREIGN KEY(`bill_id_b`)
+            REFERENCES `pro`.`bill` (`id_b`)
+            ON DELETE CASCADE
+            ON UPDATE CASCADE
+
+        END;");
+        $stmt->execute();
+		  $stmt = $GLOBALS["conn"]->prepare("CALL delete();");
+        $stmt->execute();
+        $GLOBALS["conn" ]=null;
+	}
+	catch(PDOException $e)
+    {
+    echo "Error: " . $e->getMessage();
+    }
+}
+
 
   function __construct($date, $customer_idcustomer){
   
@@ -58,7 +102,7 @@ public static function set_date($date){
   try{
     connect();
   
-       $stmt = $GLOBALS['conn']->prepare("INSERT INTO Bill (date) VALUES (:date)");
+       $stmt = $GLOBALS["conn"]->prepare("INSERT INTO Bill (date) VALUES (:date)");
     $stmt->bindParam(':date', $date);
     
 
@@ -126,7 +170,7 @@ public static function get_idcustomer($name_c){
 
 
 
-static function detele($id_b){
+static function delete($id_b){
                 try{
                     connect();
          $stmt = $GLOBALS["conn"]->prepare("DELETE FROM Bill WHERE id_b= $id_b");
