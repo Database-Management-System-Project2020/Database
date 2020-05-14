@@ -19,11 +19,12 @@ $GLOBALS["conn" ]=$conn;
 
 try{
 #echo employee_type_has_pages:: getpage_url(3);
-echo employee_type_has_pages::gettype(1);
+#echo employee_type_has_pages::gettype(1);
 #employee_type_has_pages:: updatePages_idpages('1');
 #employee_type_has_pages:: setEmployee_type_idemployee_type(2);
 #employee_type_has_pages:: setID('2', '2');
-
+#employee_type_has_pages:: deteleIdemployeetype('1');
+ employee_type_has_pages::deteleIdpages('1');
 }
 
 
@@ -41,6 +42,56 @@ class employee_type_has_pages{
 
 public $pages_idpages;
 public $employee_type_idemployee_type;
+
+
+
+public static function procedure(){
+    try{
+        connect();
+
+            $stmt = $GLOBALS["conn"]->prepare("DROP PROCEDURE IF EXISTS delete");
+
+                        $sql->execute();
+
+            $stmt = $GLOBALS["conn"]->prepare("CREATE PROCEDURE delete()
+
+
+            BEGIN
+                ALTER TABLE employee_type_has_pages
+                DROP CONSTRAINT `fk_employee_type_has_pages_employee_type1`
+                DROP CONSTRAINT `fk_employee_type_has_pages_pages1`
+
+
+                ALTER TABLE employee_type_has_pages
+
+                ADD  CONSTRAINT `fk_employee_type_has_pages_employee_type1`
+                    FOREIGN KEY (`employee_type_idemployee_type`)
+                    REFERENCES `project`.`employee_type` (`idemployee_type`)
+                    ON DELETE CASCADE
+                    ON UPDATE CASCADE,
+
+
+
+
+                 ADD CONSTRAINT `fk_employee_type_has_pages_pages1`
+                    FOREIGN KEY (`pages_idpages`)
+                    REFERENCES `project`.`pages` (`idpages`)
+                    ON DELETE CASCADE
+                    ON UPDATE CASCADE
+
+            END;");
+        $stmt->execute();
+        $stmt = $GLOBALS["conn"]->prepare("CALL delete();");
+        $stmt->execute();
+        $GLOBALS["conn" ]=null;
+
+    }
+    catch(PDOException $e)
+    {
+    echo "Error: " . $e->getMessage();
+    }
+}
+
 
 
 public function __construct($pages_idpages, $employee_type_idemployee_type){
@@ -119,12 +170,31 @@ catch(PDOException $e)
     }
 
 }
-
-
-static function detele($pages_idpages){
+static function deteleIdpages($pages_idpages){
                 try{
                     connect();
          $stmt = $GLOBALS["conn"]->prepare("DELETE FROM employee_type_has_pages WHERE $pages_idpages=pages_idpages");
+                     $stmt->bindParam(':pages_idpage', $pages_idpage);
+
+         $stmt->execute();
+
+        echo "record deleted successfully";
+    }   
+catch(PDOException $e)
+    {
+    echo "Error: " . $e->getMessage();
+    }
+
+
+    }
+
+
+
+
+static function deteleIdemployeetype($employee_type_idemployee_type){
+                try{
+                    connect();
+         $stmt = $GLOBALS["conn"]->prepare("DELETE FROM employee_type_has_pages WHERE $employee_type_idemployee_type=employee_type_idemployee_type");
                      $stmt->bindParam(':employee_type_idemployee_type', $employee_type_idemployee_type);
 
          $stmt->execute();
