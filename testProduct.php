@@ -223,6 +223,25 @@ class Product{
     	$GLOBALS["conn" ]=null;
 		
     }
+    function stockid_constraints(){
+        Connection::connect();
+        $stmt1= Connection::get_conn()->prepare("ALTER TABLE product DROP CONSTRAINT fk_product_stock1");
+        $stmt2= Connection::get_conn()->prepare("alter table product add constraint fk_product_stock1 foreign key (stock_idstock) references stock(idstock) on delete set null on update cascade");
+        $stmt1->execute();
+        $stmt2->execute();
+        echo "5alas keda ";
+        Connection::close_conn();
+    }
+    function employee_idemployee_constraints(){
+        Connection::connect();
+        $stmt1= Connection::get_conn()->prepare("ALTER TABLE product DROP CONSTRAINT fk_product_employee1");
+        $stmt2= Connection::get_conn()->prepare("alter table product add constraint fk_product_employee1 foreign key (employee_idemployee) references employee(idemployee) on delete set null on update cascade");
+        $stmt1->execute();
+        $stmt2->execute();
+        echo "5alas keda ";
+        Connection::close_conn();
+
+    }
 
 
 
