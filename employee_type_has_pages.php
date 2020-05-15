@@ -75,10 +75,10 @@ catch(PDOException $e)
 
       
 }
-static function updatePages_idpages($pages_idpage){
+static function updatePages_idpages($pages_idpage, $type_id){
     try{
         connect();
-            $stmt = $GLOBALS["conn" ]->prepare("UPDATE employee_type_has_pages SET pages_idpages= :pages_idpages WHERE pages_idpages= $pages_idpages");
+            $stmt = $GLOBALS["conn" ]->prepare("UPDATE employee_type_has_pages SET pages_idpages= :pages_idpages WHERE Eemployee_type_idemployee_type= $type_id ");
             $stmt->bindParam(':pages_idpages', $pages_idpages);
             
             $stmt->execute();
@@ -100,10 +100,10 @@ catch(PDOException $e)
 
 }
  
- static function updatEpemployee_type_idmployee_type($employee_type_idemployee_type){
+ static function updatEpemployee_type_idmployee_type($employee_type_idemployee_type,$pages_idpage){
     try{
         connect();
-            $stmt = $GLOBALS["conn" ]->prepare("UPDATE employee_type_has_pages SET employee_type_idemployee_type= :employee_type_idemployee_type WHERE employee_type_idemployee_type =$employee_type_idemployee_type");
+            $stmt = $GLOBALS["conn" ]->prepare("UPDATE employee_type_has_pages SET employee_type_idemployee_type= :employee_type_idemployee_type WHERE pages_idpage = $pages_idpage");
 
             $stmt->bindParam(':employee_type_idemployee_type', $employee_type_idemployee_type);
             $stmt->execute();
