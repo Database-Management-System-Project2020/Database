@@ -45,54 +45,6 @@ public $employee_type_idemployee_type;
 
 
 
-public static function procedure(){
-    try{
-        connect();
-
-            $stmt = $GLOBALS["conn"]->prepare("DROP PROCEDURE IF EXISTS delete");
-
-                        $sql->execute();
-
-            $stmt = $GLOBALS["conn"]->prepare("CREATE PROCEDURE delete()
-
-
-            BEGIN
-                ALTER TABLE employee_type_has_pages
-                DROP CONSTRAINT `fk_employee_type_has_pages_employee_type1`
-                DROP CONSTRAINT `fk_employee_type_has_pages_pages1`
-
-
-                ALTER TABLE employee_type_has_pages
-
-                ADD  CONSTRAINT `fk_employee_type_has_pages_employee_type1`
-                    FOREIGN KEY (`employee_type_idemployee_type`)
-                    REFERENCES `project`.`employee_type` (`idemployee_type`)
-                    ON DELETE CASCADE
-                    ON UPDATE CASCADE,
-
-
-
-
-                 ADD CONSTRAINT `fk_employee_type_has_pages_pages1`
-                    FOREIGN KEY (`pages_idpages`)
-                    REFERENCES `project`.`pages` (`idpages`)
-                    ON DELETE CASCADE
-                    ON UPDATE CASCADE
-
-            END;");
-        $stmt->execute();
-        $stmt = $GLOBALS["conn"]->prepare("CALL delete();");
-        $stmt->execute();
-        $GLOBALS["conn" ]=null;
-
-    }
-    catch(PDOException $e)
-    {
-    echo "Error: " . $e->getMessage();
-    }
-}
-
-
 
 public function __construct($pages_idpages, $employee_type_idemployee_type){
 $this->$pages_idpages = $pages_idpages;
