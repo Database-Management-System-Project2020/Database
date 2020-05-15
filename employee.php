@@ -145,6 +145,36 @@ class employee{
         Connection::close_conn();
 
     }
+        function set_null_idemployeetype(){
+        Connection::connect();
+
+        $stmt1= Connection::get_conn()->prepare("ALTER TABLE employee DROP CONSTRAINT fk_employee_employee_type1");
+        $stmt2=Connection::get_conn()->prepare("alter table employee add constraint fk_employee_employee_type1 foreign key (employee_type_idemployee_type) references employee_type(idemployee_type)
+            on delete set null on update cascade");
+        $stmt1->execute();
+        $stmt2->execute();
+
+        echo "updated";
+        Connection::close_conn();
+
+    }
+    function elfunction_else7rya(){
+    	//this function is used one only time in your life..
+    	Connection::connect();
+    	$stmt1= Connection::get_conn()->prepare("ALTER TABLE employee DROP CONSTRAINT fk_employee_employee_type1");
+    	$stmt2= Connection::get_conn()->prepare("ALTER TABLE employee DROP COLUMN employee_type_idemployee_type");
+    	$stmt3= Connection::get_conn()->prepare("ALTER TABLE  employee ADD employee_type_idemployee_type int null;");
+    	$stmt4= Connection::get_conn()->prepare("alter table employee add constraint fk_employee_employee_type1 foreign key (employee_type_idemployee_type) references employee_type(idemployee_type)
+            on delete set null on update cascade");
+    	$stmt1->execute();
+        $stmt2->execute();
+        $stmt3->execute();
+        $stmt4->execute();
+        echo "5alas keda ";
+        Connection::close_conn();
+
+    }
+
 
 }
 
