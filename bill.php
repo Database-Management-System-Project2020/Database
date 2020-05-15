@@ -69,7 +69,7 @@ public static function drop(){
 	        ON DELETE SET NULL 
 	        ON UPDATE CASCADE
             
-          ALTER TABLE Bill_Line
+          ALTER TABLE Bill Line
            
             DROP CONSTRAINT `fk_Bill Line_bill1`;
             ADD CONSTRAINT `fk_Bill Line_bill1`
