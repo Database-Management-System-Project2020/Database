@@ -75,10 +75,21 @@ class Bill {
                       REFERENCES `pro`.`bill` (`id_b`)
                       ON DELETE CASCADE
                     ON UPDATE CASCADE ");
+        $stmt5=$GLOBALS ["conn"]->prepare("ALTER TABLE `Bill Line`
+                      DROP CONSTRAINT `fk_Bill Line_product1`;");
+
+        $stmt6=$GLOBALS ["conn"]->prepare("ALTER TABLE `Bill Line`
+                      ADD CONSTRAINT `fk_Bill Line_product1`
+                       FOREIGN KEY (`product_product_id`)
+                      REFERENCES `pro`.`product` (`product_id`)
+                      ON DELETE CASCADE
+                      ON UPDATE CASCADE;");
         $stmt1->execute();
         $stmt2->execute();
         $stmt3->execute();
         $stmt4->execute();
+       $stmt5->execute();
+        $stmt6->execute();
         echo "updated";
         $GLOBALS["conn" ]=null;
 
