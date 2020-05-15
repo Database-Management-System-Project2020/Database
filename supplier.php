@@ -105,7 +105,7 @@ $stmt->bindParam(':name_s', $name_s);
 
 
 
-  static function update($idSupplier ,$telephone_s=NULL ,$address=NULL,$deals=NULL){
+  static function update($idSupplier ,$telephone_s=NULL ,$address=NULL,$deals=NULL,$name_s=NULL){
     
 
     if ($telephone_s!=NULL){
@@ -138,6 +138,15 @@ $stmt->bindParam(':name_s', $name_s);
         $sql->bindParam(':idSupplier', $idSupplier);
         $sql->execute();
        
+        $GLOBALS["conn" ]=null;
+    }
+
+    if ($name_s!=NULL){
+        konnekt();
+        $sql =  $GLOBALS["conn" ]->prepare("UPDATE `supplier` SET `name_s` = :name_s WHERE `idSupplier`= :idSupplier ");
+        $sql->bindParam(':name_s', $name_s);
+        $sql->bindParam(':idSupplier', $idSupplier);
+        $sql->execute();
         $GLOBALS["conn" ]=null;
     }
    echo "record updated successfully";
