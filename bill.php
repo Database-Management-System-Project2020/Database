@@ -27,7 +27,7 @@ try{
 #Bill:: set_date('10');
 #Bill:: update_date('15');
 
-echo Bill:: get_customername(5);
+//echo Bill:: get_customername(5);
 #echo Bill:: getdate('1');
 
 }
@@ -116,8 +116,10 @@ public static function get_id_by_date($date){
         $stmt->execute();
          return $stmt-> fetchAll();
          $GLOBALS["conn" ]=null;
-     }
-
+     }catch(PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            }
+}
 public static function update_date($id_b, $date)
     {
         connect();
@@ -139,7 +141,9 @@ public static function get_idcustomer($name_c){
          $GLOBALS["conn" ]=null;
      }
 
-
+catch(PDOException $e) {
+            echo "Error: " . $e->getMessage();
+            }
 
 
 
