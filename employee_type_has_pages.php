@@ -50,7 +50,37 @@ public function __construct($pages_idpages, $employee_type_idemployee_type){
 $this->$pages_idpages = $pages_idpages;
 $this->$employee_type_idemployee_type = $employee_type_idemployee_type;
 } 
+public static function emp_type_table_constraints(){
+        konnekt();
+        $stmt1= $GLOBALS["conn" ]->prepare(" ALTER TABLE employee_type_has_pages
+                            DROP CONSTRAINT `fk_employee_type_has_pages_employee_type1` ");
+        $stmt2=$GLOBALS["conn" ]->prepare(" ALTER TABLE employee_type_has_pages
+                            ADD  CONSTRAINT `fk_employee_type_has_pages_employee_type1`
+                                FOREIGN KEY (`employee_type_idemployee_type`)
+                                REFERENCES `pro`.`employee_type` (`idemployee_type`)
+                                ON DELETE CASCADE
+                                ON UPDATE CASCADE
 
+            ");
+
+        $stmt3= $GLOBALS["conn" ]->prepare(" ALTER TABLE employee_type_has_pages
+                            DROP CONSTRAINT `fk_employee_type_has_pages_pages1`; ");
+        $stmt4=$GLOBALS["conn" ]->prepare(" ALTER TABLE employee_type_has_pages
+                             ADD CONSTRAINT `fk_employee_type_has_pages_pages1`
+                                FOREIGN KEY (`pages_idpages`)
+                                REFERENCES `pro`.`pages` (`idpages`)
+                                ON DELETE CASCADE
+                                ON UPDATE CASCADE  ");
+       
+        $stmt1->execute();
+        $stmt2->execute();
+        $stmt3->execute();
+        $stmt4->execute();
+      
+        echo "updated";
+        $GLOBALS["conn" ]=null;
+    }
+  
  
    public static function setID($pages_idpages, $employee_type_idemployee_type){
     try {
@@ -78,11 +108,8 @@ catch(PDOException $e)
 static function updatePages_idpages($pages_idpage, $type_id){
     try{
         connect();
-            $stmt = $GLOBALS["conn" ]->prepare("UPDATE employee_type_has_pages SET pages_idpages= :pages_idpages WHERE Eemployee_type_idemployee_type= $type_id ");
-            $stmt->bindParam(':pages_idpages', $pages_idpages);
-            
-            $stmt->execute();
-
+           employee_type_has_pages::deteleIdemployeetype($type_id);
+           employee_type_has_pages::setID($pages_idpage, $type_id);
 
       $GLOBALS["conn" ]=null;
 
@@ -103,12 +130,8 @@ catch(PDOException $e)
  static function updatEpemployee_type_idmployee_type($employee_type_idemployee_type,$pages_idpage){
     try{
         connect();
-            $stmt = $GLOBALS["conn" ]->prepare("UPDATE employee_type_has_pages SET employee_type_idemployee_type= :employee_type_idemployee_type WHERE pages_idpage = $pages_idpage");
-
-            $stmt->bindParam(':employee_type_idemployee_type', $employee_type_idemployee_type);
-            $stmt->execute();
-
-
+        employee_type_has_pages::deteleIdpages($employee_type_idemployee_type);
+        employee_type_has_pages::setID($pages_idpage, $employee_type_idemployee_type);
       $GLOBALS["conn" ]=null;
 
     
