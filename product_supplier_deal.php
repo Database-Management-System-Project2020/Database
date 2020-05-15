@@ -7,6 +7,63 @@ public $deadline;
 public $discount;
 
 
+static function supplier_and_emp_has_pages_tbls_contstr(){
+			konnekt();
+			$sql=$GLOBALS["conn" ]->prepare("DROP PROCEDURE IF EXISTS altertbl");
+			$sql->execute();
+
+			$sql=$GLOBALS["conn" ]->prepare("CREATE PROCEDURE altertbl()
+			 			BEGIN
+			 				ALTER TABLE `product_sale` DROP CONSTRAINT `fk_product_sale_product1`;
+			 				ALTER TABLE `product_sale` ADD CONSTRAINT `fk_product_sale_product1`
+                            FOREIGN KEY (`product_product_id`)
+                            REFERENCES `product` (`product_id`)
+                            ON DELETE CASCADE
+                            ON UPDATE CASCADE;
+
+
+                            ALTER TABLE `product_supplier_deal` DROP CONSTRAINT `fk_product_has_Supplier_Supplier1`;
+                            ALTER TABLE `product_supplier_deal` DROP CONSTRAINT `fk_product_Supplier_deal_product1`;
+                            ALTER TABLE `product_supplier_deal` ADD CONSTRAINT `fk_product_has_Supplier_Supplier1`
+                            FOREIGN KEY (`Supplier_idSupplier`)
+						    REFERENCES `pro`.`Supplier` (`idSupplier`)
+						    ON DELETE SET NULL
+						    ON UPDATE CASCADE;
+
+						    ALTER TABLE `product_supplier_deal` ADD CONSTRAINT `fk_product_Supplier_deal_product1`
+                            FOREIGN KEY (`product_product_id`)
+    						REFERENCES `pro`.`product` (`product_id`)
+						    ON DELETE CASCADE
+						    ON UPDATE CASCADE;
+
+						   ALTER TABLE employee_type_has_pages
+                DROP CONSTRAINT `fk_employee_type_has_pages_employee_type1`;
+
+                ALTER TABLE employee_type_has_pages
+                DROP CONSTRAINT `fk_employee_type_has_pages_pages1`;
+
+                ALTER TABLE employee_type_has_pages
+                ADD  CONSTRAINT `fk_employee_type_has_pages_employee_type1`
+                    FOREIGN KEY (`employee_type_idemployee_type`)
+                    REFERENCES `pro`.`employee_type` (`idemployee_type`)
+                    ON DELETE CASCADE
+                    ON UPDATE CASCADE;
+
+                ALTER TABLE employee_type_has_pages
+                 ADD CONSTRAINT `fk_employee_type_has_pages_pages1`
+                    FOREIGN KEY (`pages_idpages`)
+                    REFERENCES `pro`.`pages` (`idpages`)
+                    ON DELETE CASCADE
+                    ON UPDATE CASCADE;
+        
+			 			END ");
+			$sql->execute();
+			$sql=$GLOBALS["conn" ]->prepare("CALL altertbl()");
+			$sql->execute();
+			$GLOBALS["conn" ]=null;
+			echo "string";
+
+		}
 //kall get_info_by_n to hoose sup naewe fy el produt feeh funtion to get info by ae
 static function insert_deal($product_id, $supplier_id, $supplied_date,$deadline, $discount){
   konnekt();
