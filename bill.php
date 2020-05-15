@@ -1,7 +1,6 @@
 <?php
 $conn;
 
-
 // Create connection
 function connect(){
 $servername = "localhost";
@@ -48,47 +47,7 @@ class Bill {
       public $date;
       public $customer_idcustomer;
 
-      
-public static function drop(){
-	try{
-		connect();
-
-
-		$sql=$GLOBALS["conn" ]->prepare("DROP PROCEDURE IF EXISTS  delete");
-        $sql->execute();
-
-		$stmt = $GLOBALS["conn"]->prepare("CREATE PROCEDURE delete()
-        BEGIN
-	        ALTER TABLE Bill 
-	        DROP CONSTRAINT `fk_bill_customer1`;
-
-	        ALTER TABLE Bill
-	        ADD CONSTRAINT `fk_bill_customer1`
-	        FOREIGN KEY(`customer_idcustomer1`)
-    		REFERENCES `pro`.`customer` (`idcustomer`)
-	        ON DELETE SET NULL 
-	        ON UPDATE CASCADE
-            
-          ALTER TABLE Bill Line
-           
-            DROP CONSTRAINT `fk_Bill Line_bill1`;
-            ADD CONSTRAINT `fk_Bill Line_bill1`
-            FOREIGN KEY(`bill_id_b`)
-            REFERENCES `pro`.`bill` (`id_b`)
-            ON DELETE CASCADE
-            ON UPDATE CASCADE
-
-        END;");
-        $stmt->execute();
-		  $stmt = $GLOBALS["conn"]->prepare("CALL delete();");
-        $stmt->execute();
-        $GLOBALS["conn" ]=null;
-	}
-	catch(PDOException $e)
-    {
-    echo "Error: " . $e->getMessage();
-    }
-}
+  
 
 
   function __construct($date, $customer_idcustomer){
@@ -97,7 +56,33 @@ public static function drop(){
   $this->customer_idcustomer=$customer_idcustomer; 
 }
 
+ 
+    public static function bill_table_constraints(){
+        connect();
+        $stmt1= $GLOBALS["conn" ]->prepare("alter table Bill DROP  constraint `fk_bill_customer1` ");
+        $stmt2=$GLOBALS["conn" ]->prepare(" ALTER TABLE Bill
+                    ADD CONSTRAINT `fk_bill_customer1`
+                    FOREIGN KEY(`customer_idcustomer1`)
+                  REFERENCES `pro`.`customer` (`idcustomer`)
+                    ON DELETE CASCADE 
+                    ON UPDATE CASCADE ");
 
+        $stmt3= $GLOBALS["conn" ]->prepare("ALTER TABLE `Bill Line`
+                      DROP CONSTRAINT `fk_Bill Line_bill1`; ");
+        $stmt4=$GLOBALS["conn" ]->prepare(" ALTER TABLE `Bill Line`
+                      ADD CONSTRAINT `fk_Bill Line_bill1`
+                      FOREIGN KEY(`bill_id_b`)
+                      REFERENCES `pro`.`bill` (`id_b`)
+                      ON DELETE CASCADE
+                    ON UPDATE CASCADE ");
+        $stmt1->execute();
+        $stmt2->execute();
+        $stmt3->execute();
+        $stmt4->execute();
+        echo "updated";
+        $GLOBALS["conn" ]=null;
+
+    }
 public static function set_date($date){
   try{
     connect();
