@@ -107,9 +107,18 @@ catch(PDOException $e)
 
 
 
+public static function get_id_by_date($date){
+     try{
+        connect();
+        $stmt = $$GLOBALS["conn"]->prepare("SELECT id_b from Bill WHERE date = :date ");
+        $stmt->bindParam(':date', $date);
+       
+        $stmt->execute();
+         return $stmt-> fetchAll();
+         $GLOBALS["conn" ]=null;
+     }
 
-
-public static function update_date($id_b)
+public static function update_date($id_b, $date)
     {
         connect();
         $stmt = $GLOBALS["conn"]->prepare("UPDATE Bill SET date = :date WHERE id_b= $id_b");
