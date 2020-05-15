@@ -342,7 +342,7 @@ class Books
         Connection::close_conn();
 
     }
-    function books_tbl_constraints(){
+    function on_delete_cascade_books(){
         Connection::connect();
         $stmt1= Connection::get_conn()->prepare("alter table books DROP  constraint fk_Books_product1");
         $stmt2=Connection::get_conn()->prepare("alter table books add constraint fk_Books_product1 foreign key (product_product_id) references product(product_id) on delete cascade");
