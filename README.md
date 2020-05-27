@@ -1,5 +1,5 @@
 "# Database" 
-in this readme file we are gonna to talk about
+in this readme file we are gonna talk about
 
 1-the purpose of each file
 
@@ -28,7 +28,7 @@ each &quot; **get\_..&quot;** function takes a barcode as argument except the ge
 each &quot; **update\_..**&quot; function takes 2 arguments:
 
 1. Barcode of the item that is wanted to be updated.
-2. The new values which are wanted to update the old one
+2. The new values which are wanted to update the old ones
 
 Delete function (delete\_book\_record)assumes that you have enabled cascade delete mode using the on\_delete\_cascade\_books function
 
